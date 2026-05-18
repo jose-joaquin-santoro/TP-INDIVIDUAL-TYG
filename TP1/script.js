@@ -1,6 +1,6 @@
 var frases = [
     {
-        texto: "Las personas valorarían más su silencio si supieran el peso de sus palabras.",
+        texto: "Las personas valorarian mas su silencio si supieran el peso de sus palabras.",
         clase: "sombra-uno"
     },
     {
@@ -8,7 +8,7 @@ var frases = [
         clase: "sombra-dos"
     },
     {
-        texto: "El verdadero rival es uno mismo.",
+        texto: "Las personas viven atadas a lo que aceptan como verdad.",
         clase: "sombra-tres"
     }
 ];
@@ -41,15 +41,18 @@ function mostrarFraseAleatoria() {
 }
 
 function prepararMenu() {
-    var links = document.querySelectorAll(".menu a");
+    var linkAkatsuki = document.getElementById("link-akatsuki");
+    var linkBijuus = document.getElementById("link-bijuus");
 
-    for (var i = 0; i < links.length; i++) {
-        links[i].onclick = function(evento) {
-            evento.preventDefault();
-            var api = this.getAttribute("href").replace("#", "");
-            consumirApi(api);
-        };
-    }
+    linkAkatsuki.onclick = function() {
+        consumirApi("akatsuki");
+        return false;
+    };
+
+    linkBijuus.onclick = function() {
+        consumirApi("bijuus");
+        return false;
+    };
 }
 
 function consumirApi(nombreApi) {
@@ -62,9 +65,11 @@ function consumirApi(nombreApi) {
     solicitud.onreadystatechange = function() {
         if (solicitud.readyState == 4 && solicitud.status == 200) {
             var datos = JSON.parse(solicitud.responseText);
+
             if (api.tipo == "akatsuki") {
                 mostrarDatos(api, datos.akatsuki);
             }
+
             if (api.tipo == "bijuus") {
                 mostrarDatos(api, datos["tailed-beasts"]);
             }
@@ -85,38 +90,24 @@ function mostrarDatos(api, datos) {
 
     if (api.tipo == "akatsuki" || api.tipo == "bijuus") {
         html += "<div class='tarjetas'>";
+
         for (var i = 0; i < datos.length; i++) {
             var imagen = "";
-            var afiliacion = "Sin dato";
-            var clasificacion = "Sin dato";
-            var jutsu = "Sin dato";
 
             if (datos[i].images && datos[i].images.length > 0) {
                 imagen = datos[i].images[0];
             }
 
-            if (datos[i].personal && datos[i].personal.affiliation) {
-                afiliacion = datos[i].personal.affiliation;
-            }
-
-            if (datos[i].personal && datos[i].personal.classification) {
-                clasificacion = datos[i].personal.classification;
-            }
-
-            if (datos[i].jutsu && datos[i].jutsu.length > 0) {
-                jutsu = datos[i].jutsu[0];
-            }
-
             html += "<article class='tarjeta'>";
+
             if (imagen != "") {
                 html += "<img class='imagen-tarjeta' src='" + imagen + "' alt='" + datos[i].name + "'>";
             }
+
             html += "<h3>" + datos[i].name + "</h3>";
-            html += "<p><strong>Afiliacion:</strong> " + afiliacion + "</p>";
-            html += "<p><strong>Clasificacion:</strong> " + clasificacion + "</p>";
-            html += "<p><strong>Jutsu:</strong> " + jutsu + "</p>";
             html += "</article>";
         }
+
         html += "</div>";
     }
 
