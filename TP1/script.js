@@ -1,28 +1,28 @@
 var frases = [
     {
-        texto: "La web se construye con estructura, estilo y comportamiento.",
+        texto: "Las personas valorarían más su silencio si supieran el peso de sus palabras.",
         clase: "sombra-uno"
     },
     {
-        texto: "HTML organiza el contenido y CSS le da presentacion.",
+        texto: "Quien no conoce el dolor no puede entender la verdadera paz.",
         clase: "sombra-dos"
     },
     {
-        texto: "JavaScript permite que una pagina responda al usuario.",
+        texto: "El verdadero rival es uno mismo.",
         clase: "sombra-tres"
     }
 ];
 
 var apis = {
-    usuarios: {
-        titulo: "Usuarios",
-        url: "https://randomuser.me/api/?results=6&nat=es",
-        tipo: "usuarios"
+    akatsuki: {
+        titulo: "Akatsuki",
+        url: "https://dattebayo-api.onrender.com/akatsuki?page=1&limit=44",
+        tipo: "akatsuki"
     },
-    publicaciones: {
-        titulo: "Publicaciones",
-        url: "https://jsonplaceholder.typicode.com/posts?_limit=6",
-        tipo: "publicaciones"
+    bijuus: {
+        titulo: "Bijuus",
+        url: "https://dattebayo-api.onrender.com/tailed-beasts?page=1&limit=10",
+        tipo: "bijuus"
     }
 };
 
@@ -62,10 +62,11 @@ function consumirApi(nombreApi) {
     solicitud.onreadystatechange = function() {
         if (solicitud.readyState == 4 && solicitud.status == 200) {
             var datos = JSON.parse(solicitud.responseText);
-            if (api.tipo == "usuarios") {
-                mostrarDatos(api, datos.results);
-            } else {
-                mostrarDatos(api, datos);
+            if (api.tipo == "akatsuki") {
+                mostrarDatos(api, datos.akatsuki);
+            }
+            if (api.tipo == "bijuus") {
+                mostrarDatos(api, datos["tailed-beasts"]);
             }
         }
 
@@ -82,25 +83,38 @@ function mostrarDatos(api, datos) {
     var contenido = document.getElementById("contenido-principal");
     var html = "<section class='resultado'><h2>" + api.titulo + "</h2>";
 
-    if (api.tipo == "usuarios") {
+    if (api.tipo == "akatsuki" || api.tipo == "bijuus") {
         html += "<div class='tarjetas'>";
         for (var i = 0; i < datos.length; i++) {
-            html += "<article class='tarjeta'>";
-            html += "<h3>" + datos[i].name.first + " " + datos[i].name.last + "</h3>";
-            html += "<p><strong>Usuario:</strong> " + datos[i].login.username + "</p>";
-            html += "<p><strong>Email:</strong> " + datos[i].email + "</p>";
-            html += "<p><strong>Ciudad:</strong> " + datos[i].location.city + "</p>";
-            html += "</article>";
-        }
-        html += "</div>";
-    }
+            var imagen = "";
+            var afiliacion = "Sin dato";
+            var clasificacion = "Sin dato";
+            var jutsu = "Sin dato";
 
-    if (api.tipo == "publicaciones") {
-        html += "<div class='tarjetas'>";
-        for (var j = 0; j < datos.length; j++) {
+            if (datos[i].images && datos[i].images.length > 0) {
+                imagen = datos[i].images[0];
+            }
+
+            if (datos[i].personal && datos[i].personal.affiliation) {
+                afiliacion = datos[i].personal.affiliation;
+            }
+
+            if (datos[i].personal && datos[i].personal.classification) {
+                clasificacion = datos[i].personal.classification;
+            }
+
+            if (datos[i].jutsu && datos[i].jutsu.length > 0) {
+                jutsu = datos[i].jutsu[0];
+            }
+
             html += "<article class='tarjeta'>";
-            html += "<h3>" + datos[j].title + "</h3>";
-            html += "<p>" + datos[j].body + "</p>";
+            if (imagen != "") {
+                html += "<img class='imagen-tarjeta' src='" + imagen + "' alt='" + datos[i].name + "'>";
+            }
+            html += "<h3>" + datos[i].name + "</h3>";
+            html += "<p><strong>Afiliacion:</strong> " + afiliacion + "</p>";
+            html += "<p><strong>Clasificacion:</strong> " + clasificacion + "</p>";
+            html += "<p><strong>Jutsu:</strong> " + jutsu + "</p>";
             html += "</article>";
         }
         html += "</div>";
