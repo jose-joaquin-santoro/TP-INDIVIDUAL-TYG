@@ -124,6 +124,10 @@ body {
 }
 
 .expectativa {
+    margin-top: 24px;
+    padding: 18px;
+    background-color: white;
+    border: 1px solid lightgray;
 }
 
 .expectativa h3 {
@@ -137,6 +141,7 @@ body {
 }
 
 .tarjetas {
+    margin-top: 20px;
 }
 
 .tarjeta {
